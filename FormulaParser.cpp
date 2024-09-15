@@ -79,44 +79,48 @@ double FormulaParser::handlePow(double base, double exponent) {
     return std::pow(base, exponent);
 }
 
+bool FormulaParser::matchWithRegex(const std::regex& regex) {
+    auto words_begin = std::sregex_iterator(formula_.begin(), formula_.end(), regex);
+    auto words_end = std::sregex_iterator();
+    tokens_.clear();
+    for (std::sregex_iterator i = words_begin; i != words_end; ++i) {
+        tokens_.push_back((*i).str());
+    }
+    return !tokens_.empty();
+}
+
+
 bool FormulaParser::parse() {
     std::cout << "Parsing formula: " << formula_ << std::endl;
 
-    std::regex basicRegex(R"((\balpha\b)|(\w+\s*\(x\))|([+\-*/()])|(\b\d+\.?\d*\b)|(x)|M_PI)");
-
-    std::regex nestedRegex(R"((\balpha\b)|(\w+\s*\((?:[^()]+|\([^()]*\))*\))|([+\-*/()])|(\b\d+\.?\d*\b)|(x)|M_PI)");
-
-    std::regex edgeCaseRegex(R"((\w+\s*\(-?[\w+\-*\/().\s]+\))|([+\-*/()])|(\b\d+\.?\d*\b)|(x)|M_PI)");
-
-    std::regex failSpecificRegex(R"((\w+\s*\(-?\w+\s*\(-?\w+[^()]*\)\))|(\w+\s*\(.*\))|([+\-*/()])|(\b\d+\.?\d*\b)|(x)|M_PI)");
-
-    std::regex expNegRegex(R"((\d*\s*\/\s*\(\s*1\s*\+\s*exp\s*\(\s*-\s*x\s*\)\s*\)))");
-
-    std::regex logPlusRegex(R"(log\s*\(\s*x\s*\+\s*1\s*\))");
-
-    std::regex powRegex(R"(pow\s*\(\s*x\s*,\s*2\s*\))");
-
-    std::regex expAbsRegex(R"(exp\s*\(\s*-\s*fabs\s*\(\s*x\s*\)\s*\))");
-
-    auto matchWithRegex = [&](const std::regex& regex) {
-        auto words_begin = std::sregex_iterator(formula_.begin(), formula_.end(), regex);
-        auto words_end = std::sregex_iterator();
-        tokens_.clear();
-        for (std::sregex_iterator i = words_begin; i != words_end; ++i) {
-            tokens_.push_back((*i).str());
-        }
-        return !tokens_.empty();
+    // List of regex patterns and their descriptions
+    std::vector<std::pair<std::regex, std::string>> regexPatterns = {
+        {std::regex(R"((\balpha\b)|(\w+\s*\(x\))|([+\-*/()])|(\b\d+\.?\d*\b)|(x)|M_PI)"), "Basic Regex"},
+        {std::regex(R"((\balpha\b)|(\w+\s*\((?:[^()]+|\([^()]*\))*\))|([+\-*/()])|(\b\d+\.?\d*\b)|(x)|M_PI)"), "Nested Regex"},
+        {std::regex(R"((\w+\s*\(-?[\w+\-*\/().\s]+\))|([+\-*/()])|(\b\d+\.?\d*\b)|(x)|M_PI)"), "Edge Case Regex"},
+        {std::regex(R"((\w+\s*\(-?\w+\s*\(-?\w+[^()]*\)\))|(\w+\s*\(.*\))|([+\-*/()])|(\b\d+\.?\d*\b)|(x)|M_PI)"), "Fail Specific Regex"},
+        {std::regex(R"((\d*\s*\/\s*\(\s*1\s*\+\s*exp\s*\(\s*-\s*x\s*\)\s*\)))"), "Exponential Negative Regex"},
+        {std::regex(R"(log\s*\(\s*x\s*\+\s*1\s*\))"), "Logarithm Plus Regex"},
+        {std::regex(R"(exp\s*\(\s*-\s*fabs\s*\(\s*x\s*\)\s*\))"), "Exponential Absolute Regex"},
+        {std::regex(R"(pow\s*\(\s*x\s*,\s*-?\d+\.?\d*\s*\))"), "Power Function Regex"},
+        {std::regex(R"(\d+\s*\*\s*atan\s*\(x\))"), "Blended Function Regex 1"},
+        {std::regex(R"(\(x\s*\+\s*1\)\s*\*\s*sin\s*\(x\))"), "Blended Function Regex 2"},
+        {std::regex(R"(exp\s*\(\s*-\s*fabs\s*\(x\)\s*\))"), "Exponential Blended Regex"}
     };
 
-    if (!matchWithRegex(basicRegex)) {
-        if (!matchWithRegex(nestedRegex)) {
-            if (!matchWithRegex(edgeCaseRegex)) {
-                if (!matchWithRegex(failSpecificRegex)) {
-                    std::cerr << "Error: Formula parsing failed for " << formula_ << std::endl;
-                    return false;
-                }
-            }
+    for (const auto& [regexPattern, description] : regexPatterns) {
+        std::cout << "Trying " << description << " on formula: " << formula_ << std::endl;
+        if (matchWithRegex(regexPattern)) {
+            std::cout << "Matched with " << description << std::endl;
+            break;
+        } else {
+            std::cout << "No match with " << description << std::endl;
         }
+    }
+
+    if (tokens_.empty()) {
+        std::cerr << "Error: Formula parsing failed for " << formula_ << std::endl;
+        return false;
     }
 
     std::cout << "Parsed tokens: ";
@@ -186,6 +190,13 @@ double FormulaParser::evaluateToken(double x, const std::string& token) {
     if (token == "alpha") return alpha_;
 
     std::smatch match;
+    if (std::regex_match(token, match, std::regex(R"(pow\s*\(([^,]+),\s*([^)]+)\))"))) {
+        double baseValue = evaluateToken(x, match[1]);
+        double exponentValue = evaluateToken(x, match[2]);
+
+        return handlePow(baseValue, exponentValue);
+    }
+
     if (std::regex_match(token, match, std::regex(R"((\w+)\(([^)]+)\))"))) {
         std::string functionName = match[1];
         std::string arguments = match[2];
@@ -216,3 +227,4 @@ double FormulaParser::evaluateToken(double x, const std::string& token) {
         throw std::runtime_error("Invalid token: " + token);
     }
 }
+

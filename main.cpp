@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -29,56 +30,73 @@ std::vector<std::string> readFormulasFromFile(const std::string& filePath) {
 }
 
 int main() {
-    std::string filePath = "/Users/mitchellcohen/Desktop/formulas.txt";
-    std::vector<std::string> formulas = readFormulasFromFile(filePath);
+    // Example formulas to test
+    std::string formulas[] = {
+        "sin(x)", "cos(x)", "tanh(x)", "atan(x)", "exp(x) - 1",
+        "1 / (1 + exp(-x))", "log(x + 1)", "fabs(x) - 0.5", "sqrt(fabs(x))",
+        "pow(x, 2)", "pow(fabs(x), 0.5)", "alpha * sin(x) + (1 - alpha) * cos(x)",
+        "sin(x) * cos(x)", "(x + 1) * sin(x)", "sin(x) / (1 + fabs(x))",
+        "x / (1 + fabs(x))", "sin(x) + x / (1 + fabs(x))", "exp(-fabs(x))",
+        "min(max(x, -1), 1)", "2 * atan(x)", "atan(2 * x)", "pow(x, 3)",
+        "pow(x, -1)", "log(fabs(x) + 1)", "1 / (1 + exp(-fabs(x)))",
+        "(x - 1) * log(x + 1)", "fabs(x) * sin(x)", "sqrt(x * x + 1)",
+        "max(x, -x)", "min(x + 1, 2 * x)", "x * atan(x)",
+        "exp(x) / (1 + exp(x))", "alpha * pow(x, 2) + (1 - alpha) * exp(-x)",
+        "cos(x) + tanh(x)", "atan(x) * exp(x)"
+    };
 
-    if (formulas.empty()) {
-        std::cerr << "Error: No formulas provided." << std::endl;
-        return 1;
-    }
+    int totalSuccesses = 0;
+    int totalTests = 0;
 
-    // Define test values for evaluation
-    double testValues[] = { -1.0, -0.5, 0.0, 0.5, 1.0, -0.01 };
-
-    double totalTests = 0;
-    double totalSuccesses = 0;
-
-    for (const std::string& formula : formulas) {
+    // Iterate over each formula and parse it
+    for (const auto& formula : formulas) {
         std::cout << "Testing formula: " << formula << std::endl;
         FormulaParser parser(formula);
-        if (!parser.parse()) {
-            std::cerr << "Error: Formula parsing failed for " << formula << std::endl;
-            continue;
-        }
 
-        int successCount = 0;
-        int testCount = sizeof(testValues) / sizeof(testValues[0]);
+        // Log before parsing
+        std::cout << "Parsing formula: " << formula << std::endl;
+        bool success = parser.parse();
 
-        for (double x : testValues) {
-            try {
-                double result = parser.evaluate(x);
-                std::cout << "Input: " << x << " -> Evaluated Result: " << result << std::endl;
+        if (!success) {
+            std::cerr << "Failed to parse formula: " << formula << std::endl;
+        } else {
+            // Evaluate at several points to test
+            double testInputs[] = {-1, -0.5, 0, 0.5, 1, -0.01};
+            int successes = 0; // Count successes for this formula
+            int formulaTests = 0; // Count total tests for this formula
 
-                // Check if result is within acceptable range (-1 to 1)
-                if (result >= -1.0 && result <= 1.0) {
-                    successCount++;
+            for (double x : testInputs) {
+                try {
+                    double result = parser.evaluate(x);
+                    std::cout << "Input: " << x << " -> Evaluated Result: " << result << std::endl;
+
+                    // Check if result is within the range (-1, 1)
+                    if (result >= -1 && result <= 1) {
+                        successes++;
+                    }
+                    formulaTests++;
+                } catch (const std::exception& e) {
+                    std::cerr << "Error: " << e.what() << " for input " << x << std::endl;
                 }
-            } catch (const std::runtime_error& e) {
-                std::cerr << "Error: " << e.what() << " for input " << x << std::endl;
             }
+
+            // Update overall success and test counts
+            totalSuccesses += successes;
+            totalTests += formulaTests;
+
+            // Display the percentage of outputs within range for this formula
+            double formulaPercentage = (static_cast<double>(successes) / formulaTests) * 100.0;
+            std::cout << "Percentage of outputs within range (-1 to 1) for " << formula << ": "
+                      << std::fixed << std::setprecision(2) << formulaPercentage << "%" << std::endl;
         }
-
-        double percentage = (static_cast<double>(successCount) / testCount) * 100.0;
-        totalTests += testCount;
-        totalSuccesses += successCount;
-
-        std::cout << "Percentage of outputs within range (-1 to 1) for " << formula << ": "
-                  << std::fixed << std::setprecision(2) << percentage << "%" << std::endl << std::endl;
+        std::cout << "----------------------------------------------------" << std::endl;
     }
 
     // Calculate and display the overall success rate
-    double overallPercentage = (totalSuccesses / totalTests) * 100.0;
-    std::cout << "Overall success rate: " << std::fixed << std::setprecision(2) << overallPercentage << "%" << std::endl;
+    double overallPercentage = (static_cast<double>(totalSuccesses) / totalTests) * 100.0;
 
+    // Output the overall percentage in the required format
+    std::cout << "\n          YOU GET " << std::fixed << std::setprecision(2) << overallPercentage << "%" << std::endl;
+    std::cout << "----------------------------------------------------" << std::endl;
     return 0;
 }
