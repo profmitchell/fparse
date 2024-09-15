@@ -1,0 +1,10 @@
+sin(x)
+cos(x) + 1
+tanh(x) * 2
+fabs(x) - 0.5
+sqrt(fabs(x))
+exp(x) - 1
+log(x + 1)
+pow(x, 2) + 2 * x + 1
+min(fabs(x), 0.5)
+max(sin(x), cos(x))

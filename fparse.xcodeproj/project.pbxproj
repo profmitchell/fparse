@@ -7,7 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		AF57190D2C96CAC1001F8CC8 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AF57190C2C96CAC1001F8CC8 /* main.cpp */; };
+		AF57191E2C96CD32001F8CC8 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AF57191B2C96CD32001F8CC8 /* main.cpp */; };
+		AF57191F2C96CD32001F8CC8 /* FormulaParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AF57191C2C96CD32001F8CC8 /* FormulaParser.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -24,7 +25,10 @@
 
 /* Begin PBXFileReference section */
 		AF5719092C96CAC1001F8CC8 /* fparse */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = fparse; sourceTree = BUILT_PRODUCTS_DIR; };
-		AF57190C2C96CAC1001F8CC8 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		AF57191A2C96CD32001F8CC8 /* FormulaParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FormulaParser.h; sourceTree = "<group>"; };
+		AF57191B2C96CD32001F8CC8 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		AF57191C2C96CD32001F8CC8 /* FormulaParser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FormulaParser.cpp; sourceTree = "<group>"; };
+		AF57191D2C96CD32001F8CC8 /* formulas.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = formulas.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -41,7 +45,10 @@
 		AF5719002C96CAC1001F8CC8 = {
 			isa = PBXGroup;
 			children = (
-				AF57190B2C96CAC1001F8CC8 /* fparse */,
+				AF57191C2C96CD32001F8CC8 /* FormulaParser.cpp */,
+				AF57191A2C96CD32001F8CC8 /* FormulaParser.h */,
+				AF57191D2C96CD32001F8CC8 /* formulas.txt */,
+				AF57191B2C96CD32001F8CC8 /* main.cpp */,
 				AF57190A2C96CAC1001F8CC8 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -52,14 +59,6 @@
 				AF5719092C96CAC1001F8CC8 /* fparse */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		AF57190B2C96CAC1001F8CC8 /* fparse */ = {
-			isa = PBXGroup;
-			children = (
-				AF57190C2C96CAC1001F8CC8 /* main.cpp */,
-			);
-			path = fparse;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -119,7 +118,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AF57190D2C96CAC1001F8CC8 /* main.cpp in Sources */,
+				AF57191E2C96CD32001F8CC8 /* main.cpp in Sources */,
+				AF57191F2C96CD32001F8CC8 /* FormulaParser.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -181,6 +181,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
+				SYMROOT = /Users/mitchellcohen/Desktop/fparse;
 			};
 			name = Debug;
 		};
@@ -232,26 +233,39 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
+				SYMROOT = /Users/mitchellcohen/Desktop/fparse;
 			};
 			name = Release;
 		};
 		AF5719112C96CAC1001F8CC8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 84MVV46VM6;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.1;
+				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = macosx13.1;
 			};
 			name = Debug;
 		};
 		AF5719122C96CAC1001F8CC8 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 84MVV46VM6;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.1;
+				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = macosx13.1;
 			};
 			name = Release;
 		};
