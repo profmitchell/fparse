@@ -8,3 +8,18 @@ log(x + 1)
 pow(x, 2) + 2 * x + 1
 min(fabs(x), 0.5)
 max(sin(x), cos(x))
+sin(x)
+cos(x)
+tanh(x)
+fabs(x) - 0.5
+sqrt(fabs(x))
+exp(x) - 1
+log(x + 1)
+1 / (1 + exp(-x))
+atan(x)
+ceil(x)
+floor(x)
+round(x)
+pow(fabs(x), 2)
+pow(fabs(x), 0.5)
+pow(x, 3)

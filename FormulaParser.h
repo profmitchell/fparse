@@ -22,10 +22,12 @@ private:
     std::map<std::string, std::function<double(double)>> functionMapUnary;
     std::map<std::string, std::function<double(double, double)>> functionMapBinary;
 
+    // Initialization and utility functions
     void initializeFunctionMap();
     double evaluateToken(double x, const std::string& token);
+    bool matchSpecificPatterns(); // Function to match specific problematic formulas
 
-    // Handling functions
+    // Handling functions for specific math operations
     static double handleSin(double x);
     static double handleCos(double x);
     static double handleTanh(double x);
@@ -33,13 +35,10 @@ private:
     static double handleSqrt(double x);
     static double handleExp(double x);
     static double handleLog(double x);
-    static double handleSigmoid(double x);
     static double handleAtan(double x);
-    static double handleCeil(double x);
-    static double handleFloor(double x);
-    static double handleRound(double x);
+    static double handleMin(double x, double y);
+    static double handleMax(double x, double y);
     static double handlePow(double base, double exponent);
-    
 };
 
 #endif // FORMULA_PARSER_H
