@@ -25,6 +25,7 @@ private:
 
     // Initialization and utility functions
     void initializeFunctionMap();               // Initialize the function maps
+    void initializeRegexPatterns();             // Initialize all regex patterns
     double evaluateToken(double x, const std::string& token); // Evaluate a specific token
 
     // Helper function to match formulas with regex patterns
@@ -55,10 +56,9 @@ private:
     std::regex blendedRegex1;                   // Regex for blended patterns like 2 * atan(x)
     std::regex blendedRegex2;                   // Regex for blended patterns like (x + 1) * sin(x)
     std::regex expBlendedRegex;                 // Regex for exp(-fabs(x)) patterns
-
-    // Helper function to initialize all regex patterns
-    void initializeRegexPatterns();             // Initialize all regex patterns
+    std::regex nestedFunctionRegex;             // Regex for nested functions
+    std::regex operatorRegex;                   // Regex for operators
+    std::regex divisionByZeroRegex;             // Regex for division by zero
 };
 
 #endif // FORMULA_PARSER_H
-
